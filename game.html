@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8" />
+      <title>RUN</title>
+   </head>
+   <body>
+      <script type="text/javascript" src="point.js"></script>
+      <script type="text/javascript">
+
+         var pjs = new PointJS('2d', 400, 400);
+         pjs.system.initFullPage();
+
+         var vector = pjs.vector,
+             log = pjs.system.log,
+             game = pjs.game,
+             point = vector.point,
+             size = vector.size,
+             camera = pjs.camera,
+             brush = pjs.brush,
+             OOP = pjs.OOP,
+             touch = pjs.touchControl;
+
+         var height = game.getWH().h;
+         var width = game.getWH().w;
+
+         touch.initTouchControl();
+
+         var background1 = game.newImageObject({
+            x: 0, y: 0,
+            file: 'background.jpg',
+            h: height,
+            onload: function() {
+               background2.x = background1.x + background1.w;
+            }
+         });
+
+         var background2 = game.newImageObject({
+            x: 0, y: 0,
+            file: 'background.jpg',
+            h: height
+         });
+
+         var man = game.newAnimationObject({
+            x: width/3, y: 0,
+            h: 124, w: 79,
+            delay: 5,
+            animation: pjs.tiles.newAnimation('man.png', 79, 124, 5)
+         });
+
+         var moveBackground = function(speed) {
+            background1.move(point(-speed, 0));
+            background2.move(point(-speed, 0));
+
+            if (background1.x + background1.w < 0) {
+               background1.x = background2.x + background2.w;
+            }
+
+            if (background2.x + background2.w < 0) {
+               background2.x = background1.x + background1.w;
+            }
+         };
+
+         game.newLoop('game', function() {
+            game.fill();
+
+            background1.draw();
+            background2.draw();
+
+            man.y = background2.h - man.h * 1.15;
+
+            man.draw();
+
+            moveBackground(3);
+
+         });
+
+         game.startLoop('game');
+
+
+      </script>
+   </body>
+</html>
